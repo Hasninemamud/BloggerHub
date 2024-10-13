@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+        /* Custom styles for a unique design */
+        .header {
+            background: linear-gradient(90deg, #3b82f6, #1e3a8a);
+        }
+        .footer {
+            background-color: #1e3a8a;
+        }
+        .footer a {
+            color: #60a5fa;
+        }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <header class="header p-4 shadow-md">
+      <div class="container mx-auto flex justify-between items-center">
+        <a href="/" class="text-white text-2xl font-bold">My Blog</a>
+        <nav>
+          <a href="/" class="text-white px-4">Home</a>
+          <a href="/create_post" class="text-white px-4">Create Post</a>
+          <a href="/profile" class="text-white px-4">Profile</a>
+          <a href="/logout" class="text-white px-4">Logout</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Profile Container -->
+    <!-- Profile Container -->
+    <div class="max-w-4xl mx-auto py-10">
+      <!-- Profile Card -->
+      <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="flex items-center space-x-6">
+          <!-- Profile Image -->
+          <div class="relative w-30 h-30">
+            {% if profile.profile_picture %}
+            <img class="rounded-full w-full h-full object-cover" src="{{ profile.profile_picture.url|default:'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            {% else %}
+              <img class="rounded-full w-full h-full object-cover" src="https://via.placeholder.com/150" alt="Default Profile Picture" />
+            {% endif %}
+
+            <label for="profile_picture" class=" mt-4 absolute bottom-0 right-0 bg-blue-600 text-white px-3 py-1 rounded-full cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.656-1.344-3-3-3S6 9.344 6 11c0 1.656 1.344 3 3 3s3-1.344 3-3zm7-3a3 3 0 100 6 3 3 0 000-6zm-7-8c-5.523 0-10 4.477-10 10s4.477 10 10 10c5.523 0 10-4.477 10-10S17.523 1 12 1zm5 14h-2v2a1 1 0 11-2 0v-2H9v-2h2V9a1 1 0 012 0v2h2v2z" />
+              </svg>Edit
+            </label>
+            <input type="file" id="profile_picture" name="profile_picture" class="hidden" />
+          </div>
+          <!-- User Information -->
+          <div>
+            <h1 class="text-3xl font-bold text-gray-700">{{ profile.user.username }}</h1>
+            <p class="text-gray-600 mt-2">Full Name: {{ profile.first_name }} {{ profile.last_name }}</p>
+            <p class="text-gray-600 mt-2">Email: {{ profile.user.email }}</p>
+            <p class="text-gray-600 mt-2">Phone: {{ profile.phone }}</p>
+            <p class="text-gray-600 mt-2">Address: {{ profile.address }}</p>
+          </div>
+        </div>
+
+        <!-- Edit Button -->
+        <div class="mt-6 flex justify-end">
+          <a href="{% url 'edit_profile' profile.user.id %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-300">Edit Profile</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer p-6 mt-12">
+        <div class="container mx-auto text-center text-gray-200">
+            <p class="mb-2">&copy; 2024 My Awesome Blog. All rights reserved.</p>
+            {% comment %} <nav class="flex justify-center space-x-4">
+                <a href="{% url 'about' %}" class="hover:text-white">About</a>
+                <a href="{% url 'contact' %}" class="hover:text-white">Contact</a>
+                <a href="{% url 'privacy' %}" class="hover:text-white">Privacy Policy</a>
+            </nav> {% endcomment %}
+        </div>
+    </footer>
+  </body>
+</html>

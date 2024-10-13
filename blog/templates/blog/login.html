@@ -4,14 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - My Awesome Blog</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc); /* Purple to blue gradient */
+        }
+    </style>
+    <script>
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password');
+            const passwordToggle = document.getElementById('passwordToggle');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordToggle.classList.remove('fa-eye');
+                passwordToggle.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                passwordToggle.classList.remove('fa-eye-slash');
+                passwordToggle.classList.add('fa-eye');
+            }
+        
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+        }
+    </script>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="flex flex-col min-h-screen">
+ <!-- Navbar -->
+<!-- Navbar -->
+<nav class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <a href="{% url "index" %}"><h1 class="text-xl font-bold">StoryNest</h1></a>
+        <div class="hidden md:flex space-x-4">
+            <a href="{% url 'index' %}" class="text-gray-700 hover:text-purple-600">Home</a>
+            <a href="{% url 'login_view' %}" class="text-gray-700 hover:text-purple-600">Login</a>
+            <a href="{% url 'register' %}" class="text-gray-700 hover:text-purple-600">Register</a>
+        </div>
+        <div class="md:hidden">
+            <button id="menuButton" class="text-gray-700 focus:outline-none" onclick="toggleMenu()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden hidden bg-white">
+        <a href="{% url 'index' %}" class="block text-gray-700 hover:text-purple-600 px-4 py-2">Home</a>
+        <a href="{% url 'login_view' %}" class="block text-gray-700 hover:text-purple-600 px-4 py-2">Login</a>
+        <a href="{% url 'register' %}" class="block text-gray-700 hover:text-purple-600 px-4 py-2">Register</a>
+    </div>
+</nav>
+
+<!-- JavaScript for Navbar Toggle -->
+<script>
+    const toggleButton = document.getElementById('navbar-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navbarMenu = document.getElementById('navbar-menu');
+
+    toggleButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        navbarMenu.classList.toggle('hidden');
+    });
+</script>
+
+
+
     <!-- Main Content -->
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
-            <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Login</h2>
-            <form method="POST" action="{% url 'login' %}">
+    <div class="flex-grow flex items-center justify-center">
+        <div class="max-w-md w-full bg-white shadow-lg rounded-xl p-8 transition-transform transform hover:scale-105">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Login</h2>
+            <form method="POST" action="{% url 'login_view' %}">
                 {% csrf_token %}
                 <!-- Django Form Errors -->
                 {% if form.errors %}
@@ -26,23 +94,34 @@
                 
                 <!-- Username Field -->
                 <div class="mb-4">
-                    <label for="username" class="block text-gray-700">Username</label>
-                    <input type="text" id="username" name="username" class="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" required>
+                    <label for="username" class=" block text-gray-700 text-sm font-bold mb-2">Username</label>
+                    <input type="text" id="username" name="username" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Enter your username" required>
+                    <span id="usernameError" class="text-red-500 text-sm hidden">Username is required</span>
+                </div>
+                <div class="mb-4 relative">
+                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                    <input type="password" id="password" name="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Enter your password" required>
+                    <span onclick="togglePasswordVisibility()" class="absolute inset-y-0 mt-8 right-0 flex items-center pr-3 cursor-pointer">
+                        <i id="passwordToggle" class="fas fa-eye text-gray-600"></i>
+                    </span>
                 </div>
 
                 <!-- Password Field -->
-                <div class="mb-6">
-                    <label for="password" class="block text-gray-700">Password</label>
-                    <input type="password" id="password" name="password" class="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" required>
-                </div>
+                {% comment %} <div class="mb-6 relative">
+                    <label for="password" class="block text-gray-700 text-sm font-medium mb-2">Password</label>
+                    <input type="password" id="password" name="password" class="w-full p-3 mt-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 transition duration-300 ease-in-out hover:shadow focus:shadow-lg" required>
+                    <span onclick="togglePasswordVisibility()" class="absolute inset-y-0 mt-8 right-0 flex items-center pr-3 cursor-pointer">
+                        <i id="passwordToggle" class="fas fa-eye text-gray-600"></i>
+                    </span>
+                </div> {% endcomment %}
                 
                 <!-- Login Button -->
                 <div class="mb-4">
-                    <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition">Login</button>
+                    <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition duration-300 ease-in-out">Login</button>
                 </div>
             </form>
             <p class="text-center text-gray-600 text-sm">Don't have an account? 
-                <a href="{% url 'register' %}" class="text-blue-600 hover:text-blue-700">Register</a>.
+                <a href="{% url 'register' %}" class="text-blue-600 hover:text-blue-800">Register</a>.
             </p>
         </div>
     </div>

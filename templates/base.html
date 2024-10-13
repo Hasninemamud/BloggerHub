@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Awesome Blog{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Header -->
+    <header class="bg-blue-600 p-4 text-white shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">StoryNest</h1>
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'home' %}" class="text-white hover:underline">Home</a>
+                <a href="{% url 'about' %}" class="text-white hover:underline">About</a>
+                <a href="{% url 'contact' %}" class="text-white hover:underline">Contact</a>
+                {% if user.is_authenticated %}
+                    <span>Welcome, {{ user.username }}</span>
+                    <a href="{% url 'logout_view' %}" class="text-white hover:underline">Logout</a>
+                {% else %}
+                    <a href="{% url 'login_view' %}" class="text-white hover:underline">Login</a>
+                    <a href="{% url 'register' %}" class="text-white hover:underline">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto mt-8">
+        {% block content %}
+        <!-- Content will be injected here -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 p-4 mt-12">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 My Awesome Blog. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

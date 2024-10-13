@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for a unique design */
+        .header {
+            background: linear-gradient(90deg, #3b82f6, #1e3a8a);
+        }
+        .footer {
+            background-color: #1e3a8a;
+        }
+        .footer a {
+            color: #60a5fa;
+        }
+    </style>
+    <script>
+        function showImagePreview(event) {
+            const image = document.getElementById('profileImage'); // Get the image element
+            const file = event.target.files[0]; // Get the selected file
+
+            if (file) {
+                const reader = new FileReader(); // Create a FileReader object
+
+                reader.onload = function (e) {
+                    image.src = e.target.result; // Set the image source to the file URL
+                }
+
+                reader.readAsDataURL(file); // Read the file as a data URL
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100">
+    <header class="header p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+          <a href="/" class="text-white text-2xl font-bold">My Blog</a>
+          <nav>
+            <a href="/" class="text-white px-4">Home</a>
+            <a href="/create_post" class="text-white px-4">Create Post</a>
+            <a href="/profile" class="text-white px-4">Profile</a>
+            <a href="/logout" class="text-white px-4">Logout</a>
+          </nav>
+        </div>
+      </header>
+
+    <!-- Edit Profile Container -->
+    <div class="max-w-4xl mx-auto py-10">
+        <!-- Profile Edit Form -->
+        <div class="bg-white shadow-lg rounded-lg p-8">
+            <h1 class="text-3xl font-bold mb-6 text-gray-800">Edit Profile</h1>
+            <form method="POST" enctype="multipart/form-data" class="space-y-8">
+                {% csrf_token %}
+                <!-- Profile Picture Section -->
+                <div class="flex items-center space-x-6">
+                    <div class="relative w-32 h-32">
+                        <img id="profileImage" class="rounded-full w-full h-full object-cover border-4 border-blue-500"
+                            src="{{ profile.profile_picture.url|default:'https://via.placeholder.com/150' }}" alt="Profile Picture">
+                        
+                        <!-- Icon to Change Photo -->
+                        <input type="file" id="profile_picture" name="profile_picture" class="hidden" onchange="showImagePreview(event)">
+                        <label for="profile_picture" class="absolute bottom-0 right-0 bg-blue-600 rounded-full p-1 cursor-pointer hover:bg-blue-700 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3v18h18V3H3zm8 13.5h-2V15h2v1.5zm0-3h-2V12h2v1.5zm4 3h-2v-6h2v6zm0-8h-2V9h2v1.5z" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Input Fields for User Information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- First Name -->
+                    <div>
+                        <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ profile.first_name }}" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+
+                    <!-- Last Name -->
+                    <div>
+                        <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ profile.last_name }}" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-300 ease-in-out">
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" name="email" value="{{ profile.email }}" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-300 ease-in-out">
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+                        <input type="text" id="phone" name="phone" value="{{ profile.phone }}" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-300 ease-in-out">
+                    </div>
+
+                    <!-- Address -->
+                    <div class="md:col-span-2">
+                        <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+                        <input type="text" id="address" name="address" value="{{ profile.address }}" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-300 ease-in-out">
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="mt-8 flex justify-end">
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-300 ease-in-out">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer class="footer p-6 mt-12">
+        <div class="container mx-auto text-center text-gray-200">
+            <p class="mb-2">&copy; 2024 My Awesome Blog. All rights reserved.</p>
+            {% comment %} <nav class="flex justify-center space-x-4">
+                <a href="{% url 'about' %}" class="hover:text-white">About</a>
+                <a href="{% url 'contact' %}" class="hover:text-white">Contact</a>
+                <a href="{% url 'privacy' %}" class="hover:text-white">Privacy Policy</a>
+            </nav> {% endcomment %}
+        </div>
+    </footer>
+
+</body>
+
+</html>

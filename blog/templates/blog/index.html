@@ -5,23 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog Posts</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for a unique design */
+        .header {
+            background: linear-gradient(90deg, #3b82f6, #1e3a8a);
+        }
+        .footer {
+            background-color: #1e3a8a;
+        }
+        .footer a {
+            color: #60a5fa;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 font-sans">
+
     <!-- Header -->
-    <header class="bg-blue-600 p-4 text-white shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">StoryNest</h1>
-            <form method="GET" action="{% url 'search_posts' %}" class="flex space-x-2">
-                <input type="text" name="q" placeholder="Search blog posts..." 
-                    class="w-64 px-4 py-2 text-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" required>
-                <button type="submit" 
-                    class="px-4 py-2 bg-blue-700 text-white font-semibold rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                    Search
-                </button>
-            </form>
+    <header class="header p-4 shadow-md">
+        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+            <a href="{% url 'index' %}" class="mb-2 sm:mb-0">
+                <h1 class="text-2xl font-bold text-white text-center sm:text-left">StoryNest</h1>
+            </a>
+            <div class="search-container relative mt-2 sm:mt-0 w-full max-w-xs">
+                <form method="GET" action="{% url 'search_posts' %}" class="flex items-center">
+                    <input type="text" name="q" placeholder="Search blog posts..." 
+                        class="w-full px-4 py-2 text-gray-700 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-300" required>
+                    <button type="submit" class="p-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-500 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            <nav class="flex items-center space-x-4 mt-2 sm:mt-0">
+                {% if user.is_authenticated %}
+                    <span class="hidden sm:inline text-white">Welcome, <a href="{% url 'user_profile' user.id %}" class="hover:underline">{{ user.username }}</a></span>
+                    <a href="{% url 'logout_view' %}" class="text-white hover:underline">Logout</a>
+                {% else %}
+                    <a href="{% url 'login_view' %}" class="text-white hover:underline">Login</a>
+                {% endif %}
+            </nav>
         </div>
     </header>
-
+    
     <!-- Main Content -->
     <main class="container mx-auto mt-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -45,7 +71,7 @@
                             {{ post.content|safe|truncatewords:20 }}
                         </p>
                         <div class="text-gray-500 mt-2 text-xs">
-                            <span>By {{ post.author.username }}</span> |
+                            <span>By <a href="{% url 'user_profile' post.author.id %}" class="hover:underline">{{ post.author.username }}</a></span> |
                             <span>{{ post.created_at|date:"F d, Y" }}</span>
                         </div>
                     </div>
@@ -82,10 +108,16 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-400 p-4 mt-12">
-        <div class="container mx-auto text-center">
-            <p>&copy; 2024 My Awesome Blog. All rights reserved.</p>
+    <footer class="footer p-6 mt-12">
+        <div class="container mx-auto text-center text-gray-200">
+            <p class="mb-2">&copy; 2024 My Awesome Blog. All rights reserved.</p>
+            {% comment %} <nav class="flex justify-center space-x-4">
+                <a href="{% url 'about' %}" class="hover:text-white">About</a>
+                <a href="{% url 'contact' %}" class="hover:text-white">Contact</a>
+                <a href="{% url 'privacy' %}" class="hover:text-white">Privacy Policy</a>
+            </nav> {% endcomment %}
         </div>
     </footer>
+
 </body>
 </html>
