@@ -1,7 +1,7 @@
 # Django Blogging Platform
 
 ## Overview
-StoryNest is a fully functional blogging platform built with Django, a high-level Python web framework. The platform allows users to create, read, update, and delete blog posts while supporting user registration, authentication, and a rich text editor for content creation.
+BloggerHub is a fully functional blogging platform built with Django, a high-level Python web framework. The platform allows users to create, read, update, and delete blog posts while supporting user registration, authentication, and a rich text editor for content creation.
 
 ## Key Features
 
@@ -71,5 +71,36 @@ To set up the project locally:
 ### 4. Enhanced Search Functionality
 - **Objective:** Improve the search feature for better user experience.
 - **Details:** Add filters for search results based on categories, tags, and date ranges. Implementing tags will also allow users to browse related content easily, making navigation through the blog more intuitive.
+
+## BloggerHub Visuals
+Here are some images showcasing the features of the project:
+
+![Homepage](photo/127.0.0.1_8000_home.png)
+![Search Blog](photo/127.0.0.1_8000_search.png)
+![Create Blog](photo/127.0.0.1_8000_create_post_.png)
+![Profile](photo/127.0.0.1_8000_profile.png)
+![Profile Edit Page](photo/127.0.0.1_8000_profile_user_2_.png)
+![Login](photo/127.0.0.1_8000_login_.png)
+![Sign Up](photo/127.0.0.1_8000_register_.png)
+
+
+## Contributing
+
+We welcome contributions! To contribute to this project, please follow these steps:
+
+1. **Fork the repository**:
+   Click the "Fork" button at the top right of the repository page to create a personal copy of the project.
+
+2. **Create a new branch**:
+   Use the following command to create a new branch for your feature or fix:
+   ```bash
+   git checkout -b feature/YourFeature
+3. **Commit your changes**
+   ```bash
+   git commit -m 'Add new feature'
+4. **Push to the branch**
+   ```bash
+   git push origin feature/YourFeature
+
 
 
