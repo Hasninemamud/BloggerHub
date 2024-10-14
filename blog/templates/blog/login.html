@@ -13,7 +13,7 @@
             background: linear-gradient(to right, #6a11cb, #2575fc); /* Purple to blue gradient */
         }
     </style>
-    <script>
+    {% comment %} <script>
         function togglePasswordVisibility() {
             const passwordField = document.getElementById('password');
             const passwordToggle = document.getElementById('passwordToggle');
@@ -32,6 +32,27 @@
             const menu = document.getElementById('mobileMenu');
             menu.classList.toggle('hidden');
         }
+        }
+    </script> {% endcomment %}
+    <script>
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password');
+            const passwordToggle = document.getElementById('passwordToggle');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordToggle.classList.remove('fa-eye');
+                passwordToggle.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                passwordToggle.classList.remove('fa-eye-slash');
+                passwordToggle.classList.add('fa-eye');
+            }
+        }
+        // Function to toggle mobile menu
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
         }
     </script>
 </head>
@@ -55,14 +76,14 @@
         </div>
     </div>
     <div id="mobileMenu" class="md:hidden hidden bg-white">
-        <a href="{% url 'index' %}" class="block text-gray-700 hover:text-purple-600 px-4 py-2">Home</a>
+        <a href="/" class="block text-gray-700 hover:text-purple-600 px-4 py-2">Home</a>
         <a href="{% url 'login_view' %}" class="block text-gray-700 hover:text-purple-600 px-4 py-2">Login</a>
         <a href="{% url 'register' %}" class="block text-gray-700 hover:text-purple-600 px-4 py-2">Register</a>
     </div>
 </nav>
 
 <!-- JavaScript for Navbar Toggle -->
-<script>
+{% comment %} <script>
     const toggleButton = document.getElementById('navbar-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     const navbarMenu = document.getElementById('navbar-menu');
@@ -71,7 +92,7 @@
         mobileMenu.classList.toggle('hidden');
         navbarMenu.classList.toggle('hidden');
     });
-</script>
+</script> {% endcomment %}
 
 
 

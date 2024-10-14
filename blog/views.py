@@ -12,17 +12,17 @@ from .forms import PostForm, UserProfileForm
 from django.contrib.auth.models import User  # Make sure this line is included
 
 # User Profile View
-@login_required
-def profile_view(request, id=None):
-    if id is None:
-        # Use the current user's profile
-        profile = get_object_or_404(UserProfile, user=request.user)
-    else:
-        # Fetch profile by user ID
-        user = get_object_or_404(User, id=id)
-        profile = get_object_or_404(UserProfile, user=user)
+# @login_required
+# def profile_view(request, id=None):
+#     if id is None:
+#         # Use the current user's profile
+#         profile = get_object_or_404(UserProfile, user=request.user)
+#     else:
+#         # Fetch profile by user ID
+#         user = get_object_or_404(User, id=id)
+#         profile = get_object_or_404(UserProfile, user=user)
     
-    return render(request, 'blog/profile.html', {'profile': profile})
+#     return render(request, 'blog/profile.html', {'profile': profile})
 
 
 
@@ -133,17 +133,21 @@ def search_posts(request):
 @login_required
 def create_post(request):
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)  # Pass files
+        form = PostForm(request.POST, request.FILES)  # Handle form submission
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
-            post.save()
+            post.author = request.user  # Set the logged-in user as the author
+            post.save()  # Save the post
             messages.success(request, "Post created successfully!")
-            return redirect('post_detail', post_id=post.id)
+            return redirect('post_detail', post_id=post.id)  # Redirect to the post detail page
+        else:
+            print(form.errors)  # Debugging: print form errors
     else:
-        form = PostForm()
-    
-    return render(request, 'blog/create_post.html', {'form': form})
+        form = PostForm()  # Initialize empty form for GET request
+
+    return render(request, 'blog/create_post.html', {'form': form})  # Render the form
+
+
 
 # Class-based views for creating and updating posts
 class PostCreateView(CreateView):
@@ -163,3 +167,31 @@ class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
+
+from django.core.paginator import Paginator
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, render
+from .models import UserProfile, Post
+from django.core.paginator import Paginator
+
+@login_required
+def user_profile_view(request, id):
+    user = get_object_or_404(User, id=id)
+
+    # Check if a UserProfile exists, if not, create one
+    profile, created = UserProfile.objects.get_or_create(user=user)
+
+    # Fetch posts authored by this user
+    user_posts = Post.objects.filter(author=user)
+
+    # Pagination setup
+    paginator = Paginator(user_posts, 10)  # Show 10 posts per page
+    page_number = request.GET.get('page')
+    page_posts = paginator.get_page(page_number)
+
+    return render(request, 'blog/profile.html', {
+        'profile': profile,
+        'user_posts': page_posts,
+    })
+

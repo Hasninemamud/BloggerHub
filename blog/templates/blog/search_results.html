@@ -1,111 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Search Results for "{{ query }}"</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 font-sans">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+      /* Custom styles for a unique design */
+      .header {
+        background: linear-gradient(90deg, #3b82f6, #1e3a8a);
+      }
+      .footer {
+        background-color: #1e3a8a;
+      }
+      .footer a {
+        color: #60a5fa;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans">
     <!-- Header -->
-    <header class="bg-blue-600 p-4 text-white shadow-md">
-        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
-            <a href="{% url "index" %}"><h1 class="text-xl font-bold">StoryNest</h1></a>
-            <div class="relative w-full sm:w-auto">
-                <form method="GET" action="{% url 'search_posts' %}" class="flex items-center">
-                    <input type="text" name="q" placeholder="Search blog posts..." 
-                        class="w-full px-4 py-2 text-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 pl-10" required>
-                        <button type="submit" class="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 focus:outline-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </button>
-                    
-                </form>
-            </div>
-            <div class="flex items-center space-x-4 mt-2 sm:mt-0">
-                {% if user.is_authenticated %}
-                    <span>Welcome, {{ user.username }}</span>
-                    <a href="{% url 'logout_view' %}" class="text-blue-300 hover:underline">Logout</a>
-                {% else %}
-                    <a href="{% url 'login_view' %}" class="text-blue-300 hover:underline">Login</a>
-                {% endif %}
-            </div>
+    <header class="header p-4 shadow-md">
+        <div class="container mx-auto flex sm:flex-row justify-between items-center">
+          <!-- App Name -->
+          <a href="{% url 'index' %}" class="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-0">
+            BloggerHub
+          </a>
+      
+          <!-- Search Container -->
+          <form id="search-form" class="flex items-center mb-2 sm:mb-0 sm:flex-grow sm:max-w-sm">
+            <input
+              type="text"
+              name="q"
+              placeholder="Search blog posts..."
+              class="flex-grow px-2 py-1 text-gray-700 rounded-l-md rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-300 sm:w-32 md:w-40 lg:w-52"
+              required
+            />
+            <button
+              type="submit"
+              class="p-2 text-white rounded-r-md  focus:outline-none"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
+          </form>
+      
+          <!-- Hamburger Icon for Mobile Menu -->
+          <div class="sm:hidden">
+            <button id="menu-toggle" class="p-2 text-white focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+      
+          <!-- Desktop Navigation Links -->
+          <nav class="hidden sm:flex items-center space-x-4">
+            <a href="/create_post" class="text-white px-4">Create Post</a>
+            <a href="{% url 'logout_view' %}" class="text-white hover:underline">Logout</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'user_profile' user.id %}" class="hover:underline">
+              {% if user.userprofile.profile_picture %}
+              <img class="w-8 h-8 rounded-full object-cover" src="{{ user.userprofile.profile_picture.url }}" alt="{{ user.username }}'s Profile Picture" />
+              {% else %}
+              <img class="w-8 h-8 rounded-full object-cover" src="https://via.placeholder.com/150" alt="Default Profile Picture" />
+              {% endif %}
+            </a>
+            {% endif %}
+          </nav>
         </div>
-    </header>
+      
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobile-menu" class="hidden sm:hidden mt-2">
+          <nav class="flex flex-col items-center space-y-4">
+            <a href="/create_post" class="text-white flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              <span>Create Post</span>
+            </a>
+      
+            <a href="{% url 'logout_view' %}" class="text-white flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+              </svg>
+              <span>Logout</span>
+            </a>
+      
+            <a href="{% url 'user_profile' user.id %}" class="text-white flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4.988 4.988 0 015 15a5 5 0 1110 0 4.988 4.988 0 01-.121 2.804m-7.758 0A4.992 4.992 0 0112 20a4.992 4.992 0 014.758-2.196M16.24 7a2.5 2.5 0 10-5 0 2.5 2.5 0 005 0z" />
+              </svg>
+              <span>Profile</span>
+            </a>
+          </nav>
+        </div>
+      </header>
+      
+      <!-- JavaScript to Handle Search -->
+      <script>
+        // Get the form and input elements
+        const searchForm = document.getElementById('search-form'); // Select the search form
+        const searchInput = searchForm.querySelector('input[name="q"]'); // Select the search input field
+      
+        // Add an event listener for the form submission
+        searchForm.addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent the default form submission
+          
+          const query = searchInput.value.trim(); // Get the search query and trim whitespace
+          
+          if (query) { // Check if the query is not empty
+            // Redirect to the search results page with the query as a URL parameter
+            window.location.href = `/search?q=${encodeURIComponent(query)}`;
+          } else {
+            alert('Please enter a search term.'); // Alert if the input is empty
+          }
+        });
+      
+        // JavaScript to Toggle Mobile Menu
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+          var menu = document.getElementById('mobile-menu');
+          menu.classList.toggle('hidden');
+        });
+      </script>
 
     <!-- Main Content -->
     <main class="container mx-auto mt-8 px-4">
-        <!-- Search Results Header -->
-        <section class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Search Results for "{{ query }}"</h1>
-            <p class="text-gray-600 mt-2">{{ posts.count }} result(s) found for your search.</p>
-        </section>
+      <!-- Search Results Header -->
+      <section class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Search Results for "{{ query }}"</h1>
+        <p class="text-gray-600 mt-2">{{ posts.count }} result(s) found for your search.</p>
+      </section>
 
-        <!-- Posts Grid -->
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% if posts %}
-                {% for post in posts %}
-                    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                        <img src="{{ post.image.url|default:'https://via.placeholder.com/400x200' }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h2 class="text-xl font-bold mb-2 hover:text-blue-600 transition">
-                                <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
-                            </h2>
-                            <p class="text-gray-700 text-sm mb-4">{{ post.content|truncatewords:20 }}</p>
-                            <div class="text-gray-500 text-xs">
-                                <span>By {{ post.author.username }}</span> |
-                                <span>{{ post.created_at|date:"F d, Y" }}</span>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p class="text-gray-500 text-center col-span-full">No results found for "{{ query }}". Please try another search term.</p>
-            {% endif %}
-        </section>
-        
-        <!-- Pagination -->
-        <!-- Pagination -->
-{% if posts %}
-<div class="mt-8 flex justify-center">
-    <nav class="inline-flex space-x-1">
-        {% if page_obj.has_previous %}
-            <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}"
-               class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-l-md hover:bg-gray-300">
-                Previous
-            </a>
+      <!-- Posts Grid -->
+      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% if posts %}
+          {% for post in posts %}
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+              <img src="{{ post.image.url|default:'https://via.placeholder.com/400x200' }}" alt="{{ post.title }}" class="w-full h-48 object-cover" />
+              <div class="p-4">
+                <h2 class="text-xl font-bold mb-2 hover:text-blue-600 transition"><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h2>
+                <p class="text-gray-700 text-sm mb-4">{{ post.content|truncatewords:20 }}</p>
+                <div class="text-gray-500 text-xs">
+                  <span>By {{ post.author.username }}</span> |
+                  <span>{{ post.created_at|date:'F d, Y' }}</span>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
         {% else %}
-            <span class="px-4 py-2 bg-gray-300 text-gray-500 font-semibold rounded-l-md">Previous</span>
+          <p class="text-gray-500 text-center col-span-full">No results found for "{{ query }}". Please try another search term.</p>
         {% endif %}
+      </section>
 
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
+      <!-- Pagination -->
+      <!-- Pagination -->
+      {% if posts %}
+        <div class="mt-8 flex justify-center">
+          <nav class="inline-flex space-x-1">
+            {% if page_obj.has_previous %}
+              <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-l-md hover:bg-gray-300">Previous</a>
+            {% else %}
+              <span class="px-4 py-2 bg-gray-300 text-gray-500 font-semibold rounded-l-md">Previous</span>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+              {% if page_obj.number == num %}
                 <span class="px-4 py-2 bg-blue-600 text-white font-semibold">{{ num }}</span>
-            {% else %}
+              {% else %}
                 <a href="?q={{ query }}&page={{ num }}" class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300">{{ num }}</a>
-            {% endif %}
-        {% endfor %}
+              {% endif %}
+            {% endfor %}
 
-        {% if page_obj.has_next %}
-            <a href="?q={{ query }}&page={{ page_obj.next_page_number }}"
-               class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-r-md hover:bg-gray-300">
-                Next
-            </a>
-        {% else %}
-            <span class="px-4 py-2 bg-gray-300 text-gray-500 font-semibold rounded-r-md">Next</span>
-        {% endif %}
-    </nav>
-</div>
-{% endif %}
+            {% if page_obj.has_next %}
+              <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-r-md hover:bg-gray-300">Next</a>
+            {% else %}
+              <span class="px-4 py-2 bg-gray-300 text-gray-500 font-semibold rounded-r-md">Next</span>
+            {% endif %}
+          </nav>
+        </div>
+      {% endif %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-400 p-4 mt-12 fixed bottom-0 left-0 w-full">
-        <div class="container mx-auto text-center">
-            <p>&copy; 2024 My Awesome Blog. All rights reserved.</p>
+    <footer class="footer p-6 mt-12 sm: mb-0">
+        <div class="container mx-auto text-center text-gray-200">
+          <p class="mb-2">&copy; 2024 BloggerHub. All rights reserved.</p>
+          <div class="mt-2">
+            <a href="#" class="text-gray-200 hover:text-gray-200 mx-2">Facebook</a>
+            <a href="#" class="text-gray-200 hover:text-gray-200 mx-2">Twitter</a>
+            <a href="#" class="text-gray-200 hover:text-gray-200 mx-2">Instagram</a>
+          </div>
         </div>
-    </footer>
-    
-</body>
+      </footer>
+  </body>
 </html>
