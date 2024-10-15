@@ -35,6 +35,9 @@ BloggerHub is a fully functional blogging platform built with Django, a high-lev
 - **Frontend:** HTML, TailwindCSS, JS for responsive design
 - **Database:** SQLite 
 - **Rich Text Editor:** CKEditor
+- 
+### Admin Credentials 
+username - admin, password - admin
 
 ## Installation
 To set up the project locally:
@@ -54,6 +57,25 @@ To set up the project locally:
 5. Run the development server:
    ```bash
    python manage.py runserver
+
+## Contributing
+
+We welcome contributions! To contribute to this project, please follow these steps:
+
+1. **Fork the repository**:
+   Click the "Fork" button at the top right of the repository page to create a personal copy of the project.
+
+2. **Create a new branch**:
+   Use the following command to create a new branch for your feature or fix:
+   ```bash
+   git checkout -b feature/YourFeature
+3. **Commit your changes**
+   ```bash
+   git commit -m 'Add new feature'
+4. **Push to the branch**
+   ```bash
+   git push origin feature/YourFeature
+   
 ## Future Enhancements
 
 ### 1. User Roles and Permissions
@@ -84,23 +106,7 @@ Here are some images showcasing the features of the project:
 ![Sign Up](photo/127.0.0.1_8000_register_.png)
 
 
-## Contributing
 
-We welcome contributions! To contribute to this project, please follow these steps:
-
-1. **Fork the repository**:
-   Click the "Fork" button at the top right of the repository page to create a personal copy of the project.
-
-2. **Create a new branch**:
-   Use the following command to create a new branch for your feature or fix:
-   ```bash
-   git checkout -b feature/YourFeature
-3. **Commit your changes**
-   ```bash
-   git commit -m 'Add new feature'
-4. **Push to the branch**
-   ```bash
-   git push origin feature/YourFeature
 
 
 
