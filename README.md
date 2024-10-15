@@ -44,7 +44,7 @@ To set up the project locally:
 
 1. Clone the repository from GitHub.
    ```bash
-   git clone [https://github.com/Hasninemamud/StoryNest.git]
+   git clone [(https://github.com/Hasninemamud/BloggerHub)]
 2. Install the required packages:
    ```bash
    pip install -r requirements.txt
