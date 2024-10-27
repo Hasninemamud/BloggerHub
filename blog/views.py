@@ -11,18 +11,6 @@ from .models import Post, Category, UserProfile
 from .forms import PostForm, UserProfileForm
 from django.contrib.auth.models import User  # Make sure this line is included
 
-# User Profile View
-# @login_required
-# def profile_view(request, id=None):
-#     if id is None:
-#         # Use the current user's profile
-#         profile = get_object_or_404(UserProfile, user=request.user)
-#     else:
-#         # Fetch profile by user ID
-#         user = get_object_or_404(User, id=id)
-#         profile = get_object_or_404(UserProfile, user=user)
-    
-#     return render(request, 'blog/profile.html', {'profile': profile})
 
 
 
@@ -84,7 +72,13 @@ def register(request):
     
     return render(request, 'blog/register.html')
 
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+
+# Redirect logged-in users away from login/register views
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('index')
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -93,8 +87,14 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 return redirect('index')
+        else:
+            messages.error(request, "Invalid username or password.")
     form = AuthenticationForm()
     return render(request, 'blog/login.html', {'form': form})
+
+
+    # registration logic here as defined
+
 
 def logout_view(request):
     logout(request)
